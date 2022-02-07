@@ -3,10 +3,10 @@ pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract WGOLD is ERC20 {
+contract SUSDG is ERC20 {
     address immutable public admin;
 
-    constructor() ERC20("WGOLD", "WGOLD") {
+    constructor() ERC20("SUSDG", "SUSDG") {
         admin = msg.sender;
     }
 
