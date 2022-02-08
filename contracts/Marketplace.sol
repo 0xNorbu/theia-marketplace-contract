@@ -1,41 +1,38 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.0;
 
+import "hardhat/console.sol";
+
 interface IERC20 {
-    function transfer(
-        address recipient,
-        uint amount
-    ) external returns (bool);
+    function totalSupply() external view returns (uint);
+    function balanceOf(address account) external view returns (uint);
+    function transfer(address recipient, uint amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint amount) external returns (bool);
+    function approve(address spender, uint amount) external returns (bool);
+    function allowance(address owner, address spender) external returns (uint);
+    function mint(address account, uint amount) external returns (bool);
+    function burn(address account, uint amount) external returns (bool);
+    function setBanker(address _banker) external;
 
-    function transferFrom(
-        address sender,
-        address recipient,
-        uint amount
-    ) external returns (bool);
-
-    function approve(
-        address spender,
-        uint amount
-    ) external returns (bool);
-
-    function mint(
-        address account,
-        uint amount
-    ) external returns (bool);
-
-    function burn(
-        address account,
-        uint amount
-    ) external returns (bool);
+    event Transfer(address indexed from, address indexed to, uint value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint value
+    );
 }
 
 contract Marketplace {
     address immutable public admin;
-    IERC20 immutable public token1;
-    IERC20 immutable public token2;
+    IERC20 public token1;
+    IERC20 public token2;
 
     mapping(address => uint) public token1Balance;
     mapping(address => uint) public token2Balance;
+
+    address[] public registerAddressArray;
+    mapping(address => bool) public registerAddress;
+
     mapping(address => bool) public scenario1Lock;
     mapping(address => bool) public scenario2Lock;
 
@@ -70,13 +67,19 @@ contract Marketplace {
      */
     function depositToken1(uint _amount) public returns (bool) {
         require(_amount > 0, "Amount cannot be zero");
+        if(!registerAddress[msg.sender]) {
+            registerAddressArray.push(msg.sender);
+        }
+        registerAddress[msg.sender] = true;
         token1Balance[msg.sender] = token1Balance[msg.sender] + _amount;
+        token1.transferFrom(msg.sender, address(this), _amount);
         emit DepositToken1(msg.sender, _amount, block.timestamp);
         return true;
     }
 
     function buyToken2() public returns (bool) {
         require(!scenario1Lock[msg.sender], "Address should not be locked");
+        require(token1Balance[msg.sender] > 0, "There is not enough token1 balance");
         scenario1Lock[msg.sender] = true;
         emit BuyToken2(msg.sender, block.timestamp);
         return true;
@@ -85,13 +88,13 @@ contract Marketplace {
     function updateToken2Qty(address _account, uint _amount) public onlyAdmin returns (bool) {
         require(_account != address(0), "Account cannot be zero");
         require(_amount > 0, "Amount cannot be zero");
-        require(scenario1Lock[msg.sender], "Address should be locked");
+        require(scenario1Lock[_account], "Address should be locked");
         require(token1Balance[_account] > 0, "Token1 balance cannot be zero");
         token2Balance[_account] = token2Balance[_account] + _amount;
         token1Balance[_account] = 0;
         token2.mint(address(this), _amount);
         token2.approve(_account, _amount);
-        scenario1Lock[msg.sender] = false;
+        scenario1Lock[_account] = false;
         emit UpdateToken2Qty(_account, token1Balance[_account], _amount, block.timestamp);
         return true;
     }
@@ -100,49 +103,13 @@ contract Marketplace {
         require(_amount > 0, "Amount cannot be zero");
         require(!scenario1Lock[msg.sender], "Address is locked");
         token2Balance[msg.sender] = token2Balance[msg.sender] - _amount;
-        token2.transferFrom(address(this), msg.sender, _amount);
+        token2.transfer(msg.sender, _amount);
         emit WithdrawToken2(msg.sender, _amount, block.timestamp);
         return true;
     }
 
-    /**
-    * Scenario 2 - depositToken2 -> buyToken1 -> updateToken1Qty -> withdrawToken1
-    */
-    function depositToken2(uint _amount) public returns (bool) {
-        require(_amount > 0, "Amount cannot be zero");
-        token2Balance[msg.sender] = token2Balance[msg.sender] + _amount;
-        emit DepositToken2(msg.sender, _amount, block.timestamp);
-        return true;
-    }
-
-    function buyToken1() public returns (bool) {
-        require(!scenario2Lock[msg.sender], "Address should not be locked");
-        scenario2Lock[msg.sender] = true;
-        emit BuyToken1(msg.sender, block.timestamp);
-        return true;
-    }
-
-    function updateToken1Qty(address _account, uint _amount) public onlyAdmin returns (bool) {
-        require(_account != address(0), "Account cannot be zero");
-        require(_amount > 0, "Amount cannot be zero");
-        require(scenario2Lock[msg.sender], "Address should be locked");
-        require(token2Balance[_account] > 0, "Token1 balance cannot be zero");
-        token1Balance[_account] = token1Balance[_account] + _amount;
-        token2Balance[_account] = 0;
-        token2.burn(address(this), _amount);
-        token1.approve(_account, _amount);
-        scenario2Lock[msg.sender] = false;
-        emit UpdateToken1Qty(_account, token2Balance[_account], _amount, block.timestamp);
-        return true;
-    }
-
-    function withdrawToken1(uint _amount) public returns (bool) {
-        require(_amount > 0, "Amount cannot be zero");
-        require(!scenario2Lock[msg.sender], "Address is locked");
-        token1Balance[msg.sender] = token1Balance[msg.sender] - _amount;
-        token1.transferFrom(address(this), msg.sender, _amount);
-        emit WithdrawToken1(msg.sender, _amount, block.timestamp);
-        return true;
+    function getRegisterAddressArrayLength() public view returns(uint256) {
+        return registerAddressArray.length;
     }
 
     // Allow admin to send back the token that is wrongly sent to this contract

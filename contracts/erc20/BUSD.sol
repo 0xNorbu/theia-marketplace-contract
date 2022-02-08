@@ -2,11 +2,13 @@
 pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "hardhat/console.sol";
 
-contract WGOLD is ERC20 {
+contract BUSD is ERC20 {
     address immutable public admin;
+    address public banker;
 
-    constructor() ERC20("WGOLD", "WGOLD") {
+    constructor() ERC20("BUSD", "BUSD") {
         admin = msg.sender;
     }
 
@@ -15,14 +17,26 @@ contract WGOLD is ERC20 {
         _;
     }
 
-    // Allow admin to mint the token
-    function mint(address account, uint amount) public onlyAdmin {
-        _mint(account, amount);
+    modifier onlyAdminOrBanker() {
+        require(msg.sender == admin || msg.sender == banker,
+            "Not admin or banker");
+        _;
     }
 
-    // Allow admin to burn the token
-    function burn(address account, uint amount) public onlyAdmin {
+    function setBanker(address _banker) public onlyAdmin {
+        banker = _banker;
+    }
+
+    // Allow admin / banker to mint the token
+    function mint(address account, uint amount) public onlyAdminOrBanker returns (bool){
+        _mint(account, amount);
+        return true;
+    }
+
+    // Allow admin / banker to burn the token
+    function burn(address account, uint amount) public onlyAdminOrBanker returns (bool){
         _burn(account, amount);
+        return true;
     }
 
     // Allow admin to send back token that is wrongly sent to this contract
