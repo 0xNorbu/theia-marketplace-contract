@@ -12,7 +12,7 @@ interface IERC20 {
     function allowance(address owner, address spender) external returns (uint);
     function mint(address account, uint amount) external returns (bool);
     function burn(address account, uint amount) external returns (bool);
-    function setBanker(address _banker) external;
+    function setMinter(address _banker) external;
 
     event Transfer(address indexed from, address indexed to, uint value);
     event Approval(

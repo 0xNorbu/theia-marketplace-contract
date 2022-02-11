@@ -23,8 +23,8 @@ describe("Scenario1", function () {
         await WGOLDContract.deployed()
         await marketPlaceContract.deployed()
 
-        await WGOLDContract.connect(admin).setBanker(marketPlaceContract.address)
-        await BUSDContract.connect(admin).setBanker(marketPlaceContract.address)
+        await WGOLDContract.connect(admin).setMinter(marketPlaceContract.address)
+        await BUSDContract.connect(admin).setMinter(marketPlaceContract.address)
 
         // mint 1 to account1
         await BUSDContract.connect(admin).mint(account1.address, ethers.utils.parseUnits("1"))
