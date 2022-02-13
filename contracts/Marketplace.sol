@@ -23,7 +23,7 @@ interface IERC20 {
 }
 
 contract Marketplace {
-    address immutable public admin;
+    address public admin;
     IERC20 public token1;
     IERC20 public token2;
 
@@ -60,6 +60,12 @@ contract Marketplace {
     modifier onlyAdmin() {
         require(msg.sender == admin, "Not admin");
         _;
+    }
+
+    // Transfer ownernship
+    function transferOwnership(address payable _admin) external onlyAdmin {
+        require(admin != address(0), "Zero address");
+        admin = _admin;
     }
 
     /**
