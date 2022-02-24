@@ -4,11 +4,11 @@ pragma solidity 0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 //import "hardhat/console.sol";
 
-contract BUSD is ERC20 {
+contract PUSDG is ERC20 {
     address immutable public admin;
     address public minter;
 
-    constructor() ERC20("BUSD", "BUSD") {
+    constructor() ERC20("PUSDG", "PUSDG") {
         admin = msg.sender;
     }
 
