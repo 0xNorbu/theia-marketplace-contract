@@ -10,7 +10,7 @@
 // User can swap pUSDG for USDC
 pragma solidity 0.8.0;
 
-interface IERC20 {
+interface IERC20WithMintAndBurn {
     function totalSupply() external view returns (uint);
     function balanceOf(address account) external view returns (uint);
     function transfer(address recipient, uint amount) external returns (bool);
@@ -31,9 +31,9 @@ interface IERC20 {
 contract Marketplace {
     address public admin;
 
-    IERC20 public usdcToken;
-    IERC20 public usdgToken;
-    IERC20 public pusdgToken;
+    IERC20WithMintAndBurn public usdcToken;
+    IERC20WithMintAndBurn public usdgToken;
+    IERC20WithMintAndBurn public pusdgToken;
 
     address[] public registerAddressArray;
     mapping(address => bool) public registerAddress;
@@ -43,9 +43,9 @@ contract Marketplace {
         address _usdgAddress,
         address _pusdgAddress
     ) {
-        usdcToken = IERC20(_usdcAddress);
-        usdgToken = IERC20(_usdgAddress);
-        pusdgToken = IERC20(_pusdgAddress);
+        usdcToken = IERC20WithMintAndBurn(_usdcAddress);
+        usdgToken = IERC20WithMintAndBurn(_usdgAddress);
+        pusdgToken = IERC20WithMintAndBurn(_pusdgAddress);
         admin = msg.sender;
     }
 
@@ -108,7 +108,7 @@ contract Marketplace {
 
     // Allow admin to send back the token that is wrongly sent to this contract
     function recover(address tokenAddress, address recoveryAddress, uint amount) public onlyAdmin {
-        IERC20(tokenAddress).transfer(recoveryAddress, amount);
+        IERC20WithMintAndBurn(tokenAddress).transfer(recoveryAddress, amount);
     }
 
     // Reject all native coin deposit
