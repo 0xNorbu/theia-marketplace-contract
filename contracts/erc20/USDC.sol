@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract USDC is ERC20 {
     address immutable public admin;
     address public minter;
+    address public burner;
 
     constructor() ERC20("USDC", "USDC") {
         admin = msg.sender;
@@ -17,24 +18,14 @@ contract USDC is ERC20 {
         _;
     }
 
-    modifier onlyAdminOrMinter() {
-        require(msg.sender == admin || msg.sender == minter,
-            "Not admin or minter");
-        _;
-    }
-
-    function setMinter(address _minter) public onlyAdmin {
-        minter = _minter;
-    }
-
     // Allow admin / minter to mint the token
-    function mint(address account, uint amount) public onlyAdminOrMinter returns (bool){
+    function mint(address account, uint amount) public onlyAdmin returns (bool){
         _mint(account, amount);
         return true;
     }
 
     // Allow admin / minter to burn the token
-    function burn(address account, uint amount) public onlyAdminOrMinter returns (bool){
+    function burn(address account, uint amount) public onlyAdmin returns (bool){
         _burn(account, amount);
         return true;
     }
