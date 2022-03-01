@@ -10,6 +10,8 @@
 // User can swap pUSDG for USDC
 pragma solidity 0.8.0;
 
+import "hardhat/console.sol";
+
 interface IERC20WithMintAndBurn {
     function totalSupply() external view returns (uint);
     function balanceOf(address account) external view returns (uint);
@@ -91,7 +93,7 @@ contract Marketplace {
     function swapUSDCForPUSDG(uint _amount) public returns (bool){
         require(_amount > 0, "Amount cannot be zero");
         usdcToken.transferFrom(msg.sender, address(this), _amount);
-        pusdgToken.mint(msg.sender, _amount);
+        pusdgToken.mint(msg.sender, _amount * 997 / 1000);
         emit SWAP_USDC_FOR_PUSDG(msg.sender, _amount, block.timestamp);
         return true;
     }
@@ -104,6 +106,10 @@ contract Marketplace {
         usdcToken.transfer(msg.sender, _amount);
         emit SWAP_PUSDG_FOR_USDG(msg.sender, _amount, block.timestamp);
         return true;
+    }
+
+    function withdrawPusdgToken() public onlyAdmin{
+        usdcToken.transfer(admin, address(this).balance);
     }
 
     // Allow admin to send back the token that is wrongly sent to this contract

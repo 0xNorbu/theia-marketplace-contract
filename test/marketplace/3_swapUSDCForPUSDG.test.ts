@@ -64,7 +64,7 @@ describe("Swap USDC for PUSDG", function () {
                 expect(account1USDCBalance).to.equal(0);
 
                 let account1PUSDGBalance = await pusdgContract.balanceOf(account1.address)
-                expect(account1PUSDGBalance).to.equal(ethers.utils.parseUnits("1000"));
+                expect(account1PUSDGBalance).to.equal(ethers.utils.parseUnits("997"));
 
                 // Marketplace
                 let marketPlaceUSDCBalance = await usdcContract.balanceOf(marketPlaceContract.address)
