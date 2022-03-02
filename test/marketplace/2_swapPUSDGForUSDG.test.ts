@@ -57,7 +57,6 @@ describe("Swap PUSDG for USDG", function () {
                 expect(marketPlaceUSDGBalance).to.equal(0);
             }
 
-            await pusdgContract.connect(account1).approve(marketPlaceContract.address, ethers.utils.parseUnits("1000"))
             await marketPlaceContract.connect(account1).swapPUSDGForUSDG(ethers.utils.parseUnits("1000"))
 
             // After

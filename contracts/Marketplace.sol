@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
+// 0x661dd7687D53568A360b01D073eBfdB77AD598C6
 // Swapping =>
 // User can swap USDC for USDG
-// User can swap pUSG for USDG
+// User can swap pUSDG for USDG
 //
 // Buying bond =>
 // User can swap USDC for pUSDG
