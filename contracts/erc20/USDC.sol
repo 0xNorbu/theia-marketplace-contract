@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
-// 0x7c6e927F36202D23839078244C182950F50ea31D
+// Old address = 0x7c6e927F36202D23839078244C182950F50ea31D (18 decimals)
+// New address = 0x83f0193cfAaF1C35c10df81d7b191969F4dca933 (6 decimals)
 pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -17,6 +18,10 @@ contract USDC is ERC20 {
     modifier onlyAdmin() {
         require(msg.sender == admin, "Not admin");
         _;
+    }
+
+    function decimals() public pure override returns (uint8) {
+        return 6;
     }
 
     // Allow admin / minter to mint the token
