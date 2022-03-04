@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
-// 0x7e4148F51587a05116C618399404b7D3165C3204
+// 0x3609C8B2006Db28BD7AFE91Feb7804977F4E9F73
 pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 //import "hardhat/console.sol";
 
-contract SUSDG is ERC20 {
+contract SUSDC is ERC20 {
     address immutable public admin;
     address public minter;
     address public burner;
@@ -37,6 +37,10 @@ contract SUSDG is ERC20 {
 
     function setBurner(address _burner) public onlyAdmin {
         burner = _burner;
+    }
+
+    function decimals() public pure override returns (uint8) {
+        return 6;
     }
 
     // Allow admin / minter to mint the token

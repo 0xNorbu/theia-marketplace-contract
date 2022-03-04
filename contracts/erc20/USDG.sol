@@ -39,6 +39,10 @@ contract USDG is ERC20 {
         burner = _burner;
     }
 
+    function decimals() public pure override returns (uint8) {
+        return 6;
+    }
+
     // Allow admin / minter to mint the token
     function mint(address account, uint amount) public onlyAdminOrMinter returns (bool){
         _mint(account, amount);

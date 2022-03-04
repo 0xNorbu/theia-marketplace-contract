@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// 0xf2085CcC5Cf59F2a481Da4Bfd13ed2b304671EC0
+// 0x3609C8B2006Db28BD7AFE91Feb7804977F4E9F73
 pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -37,6 +37,10 @@ contract PUSDG is ERC20 {
 
     function setBurner(address _burner) public onlyAdmin {
         burner = _burner;
+    }
+
+    function decimals() public pure override returns (uint8) {
+        return 6;
     }
 
     // Allow admin / minter to mint the token

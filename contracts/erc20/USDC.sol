@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Old address = 0x7c6e927F36202D23839078244C182950F50ea31D (18 decimals)
-// New address = 0x83f0193cfAaF1C35c10df81d7b191969F4dca933 (6 decimals)
+// 0x3609C8B2006Db28BD7AFE91Feb7804977F4E9F73
 pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -20,18 +19,38 @@ contract USDC is ERC20 {
         _;
     }
 
+    modifier onlyAdminOrMinter() {
+        require(msg.sender == admin || msg.sender == minter,
+            "Not admin or minter");
+        _;
+    }
+
+    modifier onlyAdminOrBurner() {
+        require(msg.sender == admin || msg.sender == burner,
+            "Not admin or burner");
+        _;
+    }
+
+    function setMinter(address _minter) public onlyAdmin {
+        minter = _minter;
+    }
+
+    function setBurner(address _burner) public onlyAdmin {
+        burner = _burner;
+    }
+
     function decimals() public pure override returns (uint8) {
         return 6;
     }
 
     // Allow admin / minter to mint the token
-    function mint(address account, uint amount) public onlyAdmin returns (bool){
+    function mint(address account, uint amount) public onlyAdminOrMinter returns (bool){
         _mint(account, amount);
         return true;
     }
 
     // Allow admin / minter to burn the token
-    function burn(address account, uint amount) public onlyAdmin returns (bool){
+    function burn(address account, uint amount) public onlyAdminOrBurner returns (bool){
         _burn(account, amount);
         return true;
     }
