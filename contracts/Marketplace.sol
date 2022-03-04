@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Old address: 0x661dd7687D53568A360b01D073eBfdB77AD598C6
-// New address: 0x96E6CF46609E2c2DD26e107145D6aa1ee161fa36
+// New address: 0x69444f490Eddf2E3Eb4CfEd61a93134246E2D8aA
 // Swapping =>
 // User can swap USDC for USDG
 // User can swap pUSDG for USDG
@@ -69,6 +68,17 @@ contract Marketplace {
         admin = _admin;
     }
 
+    function setUSDCToken(address _usdcAddress) external onlyAdmin {
+        usdcToken = IERC20WithMintAndBurn(_usdcAddress);
+    }
+
+    function setUSDGToken(address _usdgAddress) external onlyAdmin {
+        usdgToken = IERC20WithMintAndBurn(_usdgAddress);
+    }
+
+    function setPUSDGToken(address _pusdgAddress) external onlyAdmin {
+        pusdgToken = IERC20WithMintAndBurn(_pusdgAddress);
+    }
     // 1 - Contract accepts sender's USDC
     // 2 - Contract mints USDG to sender
     function swapUSDCForUSDG(uint _amount) public returns (bool) {

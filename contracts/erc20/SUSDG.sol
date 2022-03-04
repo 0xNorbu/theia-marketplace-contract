@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
-// 0x3609C8B2006Db28BD7AFE91Feb7804977F4E9F73
+// 0x3df695D73e4cB5B8Ab80f0CE861fC30BbB7b7483
 pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 //import "hardhat/console.sol";
 
-contract SUSDC is ERC20 {
+contract SUSDG is ERC20 {
     address immutable public admin;
     address public minter;
     address public burner;
