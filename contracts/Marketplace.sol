@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
-// 0x661dd7687D53568A360b01D073eBfdB77AD598C6
+// Old address: 0x661dd7687D53568A360b01D073eBfdB77AD598C6
+// New address: 0x96E6CF46609E2c2DD26e107145D6aa1ee161fa36
 // Swapping =>
 // User can swap USDC for USDG
 // User can swap pUSDG for USDG
